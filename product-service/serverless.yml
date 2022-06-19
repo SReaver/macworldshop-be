@@ -25,9 +25,5 @@ functions:
         - "./data.json"
     events:
       - http:
-          path: products/{id}
+          path: products/{productId}
           method: get
-          request:
-            parameters:
-              paths:
-                id: true
