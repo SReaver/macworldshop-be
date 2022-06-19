@@ -1,18 +1,47 @@
 'use strict';
+const productsData = require('./data.json')
 
-module.exports.hello = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
-      },
-      null,
-      2
-    ),
-  };
+const getProductsList = async () => {
+	let body = '[]'
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
-};
+	try {
+		body = JSON.stringify(productsData)
+	} catch (e) { }
+
+	return {
+		statusCode: 200,
+		body,
+		headers: {
+			"Access-Control-Allow-Headers": "Content-Type",
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "OPTIONS,GET"
+		},
+	};
+}
+
+const getProductsById = async (event) => {
+	const { productId } = event.pathParameters
+	let body = '{}'
+	const filteredProducts = productsData.filter(el => el.id === productId)
+	if (filteredProducts.length !== 0) {
+		try {
+			body = JSON.stringify(filteredProducts)
+		} catch (error) {
+			console.log(error.message)
+		}
+	}
+	return {
+		statusCode: 200,
+		body,
+		headers: {
+			"Access-Control-Allow-Headers": "Content-Type",
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "OPTIONS,GET"
+		},
+	}
+}
+
+module.exports = {
+	getProductsList,
+	getProductsById
+}
